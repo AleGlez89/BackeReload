@@ -104,12 +104,33 @@ class ManageFileService
      */
     public function moveFiles($obj)
     {
-        $Folder = new Folder();
+         $Folder = new Folder();
+        $Folder2 = new Folder();
         $File = new File();
-        $index = null;
-        $ControlDelete = trur;
+        $FolderP = array();
+        $ControlDelete = false;
 
-        $ArrayFolder = $Folder->getFiles();                           //All Folders (search father)
+        $ArrayFolder [] = $Folder->getFiles();                //Logica similar, dudas sobre el getfiles....
+        foreach ($ArrayFolder as $value) {
+            if ($value == $obj->ObjFatherOrigen) {
+                array_push($FolderP,$value);
+                $ArrayFile [] = $FolderP [0]->getFiles();
+                foreach ($ArrayFile as $value) {
+                    if ($value == $obj->ObjChil) {
+                        $ControlDelete = true;
+                        $File = $value;
+                        $var = $this->deleteFiles($File);
+                    }
+                }
+            } else if ($value == $obj->ObjFatherDestino) {
+                $Folder2 = $value;
+            }
+        }
+        $Folder2->addFile($File);
+        return $ControlDelete;
+    }
+
+       /* $ArrayFolder = $Folder->getFiles();                           //All Folders (search father)
         if ($index = array_search($obj->ObjFatherOri,$ArrayFolder))     //Search folder in list folder
         {
             $Folder = $ArrayFolder[$index];                          //Folder the File to Move
@@ -134,7 +155,7 @@ class ManageFileService
             $ControlDelete = true;                                 //Variable de control por si no existe el elemento padreNew
         }
         return $ControlDelete;
-    }
+    }*/
 
 
     /**
